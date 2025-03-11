@@ -18,27 +18,51 @@
 <body class="font-sans antialiased">
     <div class="container">
         <div class="row justify-content-center">
-            <form action="/deposit" method="post">
+            <form action="{{ route('store.payment') }}" method="post">
                 @csrf
+
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div class="form-group">
-                    <label for="name">Payment method</label>
-                    <select class="form-control" id="pay-method" name="pay-method">
-                        <option value="easymoney">EasyMoney</option>
-                        <option value="superwalletz">SuperWalletz</option>
+                    <label for="pay-method">Payment method</label>
+                    <select class="form-control @error('pay-method') is-invalid @enderror" id="pay-method" name="pay-method">
+                        <option value="easymoney" {{ old('pay-method') == 'easymoney' ? 'selected' : '' }}>EasyMoney</option>
+                        <option value="superwalletz" {{ old('pay-method') == 'superwalletz' ? 'selected' : '' }}>SuperWalletz</option>
                     </select>
+                    @error('pay-method')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="form-group">
                     <label for="amount">Amount</label>
-                    <input type="text" class="form-control" id="amount" name="amount" placeholder="Insert amount"
-                        value="25">
+                    <input type="text" class="form-control @error('amount') is-invalid @enderror" id="amount" name="amount"
+                        placeholder="Insert amount" value="{{ old('amount', 25) }}">
+                    @error('amount')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="form-group">
                     <label for="currency">Currency</label>
-                    <select class="form-control" id="currency" name="currency">
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
+                    <select class="form-control @error('currency') is-invalid @enderror" id="currency" name="currency">
+                        <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }}>USD</option>
+                        <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR</option>
                     </select>
+                    @error('currency')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Deposit</button>
                 </div>
